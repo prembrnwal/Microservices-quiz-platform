@@ -19,7 +19,7 @@ public class QuizController {
     }
 
     @PostMapping
-    public Quiz create(@RequestBody Quiz quiz ){
+    public Quiz create(@RequestBody Quiz quiz){
         return quizService.add(quiz);
     }
 @GetMapping
