@@ -3,9 +3,7 @@ package com.question.impl;
 import com.question.entity.Question;
 import com.question.repository.QuestionRepository;
 import com.question.service.QuestionService;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -31,5 +29,10 @@ public class QuestionServicwImpl implements QuestionService {
     @Override
     public Question getOne(Long id) {
         return questionRepository.findById(id).orElseThrow(()->new RuntimeException("Question not found"));
+    }
+
+    @Override
+    public List<Question> getQuestionsOfQuiz(Long quizId) {
+        return questionRepository.findByQuizId(quizId);
     }
 }
