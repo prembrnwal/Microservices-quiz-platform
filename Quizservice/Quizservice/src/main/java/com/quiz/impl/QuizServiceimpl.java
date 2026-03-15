@@ -2,16 +2,23 @@ package com.quiz.impl;
 
 import com.quiz.Entity.Quiz;
 import com.quiz.repository.QuizRepository;
+import com.quiz.service.QuestionClient;
 import com.quiz.service.QuizService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class QuizServiceimpl implements QuizService {
 
     private QuizRepository quizRepository;
-    public QuizServiceimpl(QuizRepository quizRepository) {
+
+    private QuestionClient questionClient;
+
+    public QuizServiceimpl(QuizRepository quizRepository, QuestionClient questionClient) {
         this.quizRepository = quizRepository;
+        this.questionClient = questionClient;
     }
 
     @Override
@@ -21,12 +28,21 @@ public class QuizServiceimpl implements QuizService {
 
     @Override
     public List<Quiz> get() {
-        return quizRepository.findAll();
+        List<Quiz> quizzes = quizRepository.findAll();
+
+        List<Quiz> newQuizList = quizzes.stream().map(quiz -> {
+            quiz.setQuestions(questionClient.getQuestion0fQuiz(quiz.getId()));
+            return quiz;
+        }).collect(Collectors.toList());
+
+        return newQuizList;
     }
 
 
     @Override
     public Quiz get(Long id) {
-        return quizRepository.findById(id).orElseThrow(()-> new RuntimeException("Quiz not found"));
+        Quiz quiz=quizRepository.findById(id).orElseThrow(()-> new RuntimeException("Quiz not found"));
+        quiz.setQuestions(questionClient.getQuestion0fQuiz(quiz.getId()));
+        return quiz;
     }
 }
